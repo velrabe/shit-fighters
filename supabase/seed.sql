@@ -42,6 +42,12 @@ where event_id in (select id from event_row);
 with event_row as (
   select id from public.events where slug = 'shit-fighters-2026'
 )
+delete from public.format_options
+where event_id in (select id from event_row);
+
+with event_row as (
+  select id from public.events where slug = 'shit-fighters-2026'
+)
 delete from public.prizes
 where event_id in (select id from event_row);
 

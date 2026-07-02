@@ -1,6 +1,6 @@
 # Shit Fighters
 
-Unofficial MVP site for Ludwig's July 8 Street Fighter content tournament.
+Unofficial live companion for Ludwig's July 8 Street Fighter content tournament.
 
 The current version is a Vite/React frontend backed by Supabase with:
 
