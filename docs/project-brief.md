@@ -95,3 +95,7 @@ Never fabricate tournament data.
 Never imitate official production.
 
 Every placeholder should clearly look like placeholder.
+
+Public pages are for viewers, not for operators. Do not expose outreach strategy, implementation notes, admin mechanics, database details, or internal product rationale in the user-facing UI.
+
+The first screen should answer what is happening now: current match, score, who is playing, what is next, and where to make picks.

@@ -6,12 +6,11 @@ The current version is a Vite/React frontend backed by Supabase with:
 
 - event landing page
 - competitor cards
-- format assumptions
+- public format notes
 - bracket and standings
 - Supabase pickems insert path
 - realtime match subscriptions
-- protected admin write path for match results
-- launch/outreach notes
+- live match state from Supabase
 
 ## Data rule
 

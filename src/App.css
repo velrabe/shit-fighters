@@ -33,8 +33,6 @@ main {
 .eyebrow,
 .notice-band,
 .panel-title,
-.console-topline,
-.admin-match,
 .link-row,
 .tag-row,
 .player-topline {
@@ -87,7 +85,7 @@ main {
 }
 
 .hero-media {
-  background-image: url('/assets/hero-fight-night.png');
+  background-image: url('./assets/hero-fight-night.png');
   background-position: center;
   background-size: cover;
   opacity: 0.78;
@@ -226,8 +224,8 @@ h3 {
   padding: 14px 32px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  background: var(--warning);
-  color: #251c05;
+  background: rgba(110, 255, 124, 0.1);
+  color: var(--soft);
   font-weight: 750;
 }
 
@@ -260,6 +258,79 @@ h3 {
 
 .state-panel {
   padding: 18px;
+}
+
+.live-card {
+  display: grid;
+  gap: 18px;
+  border: 1px solid rgba(110, 255, 124, 0.32);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(110, 255, 124, 0.12), rgba(71, 211, 255, 0.08)),
+    var(--panel);
+  box-shadow: var(--shadow-soft);
+  padding: 18px;
+}
+
+.live-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--acid);
+}
+
+.live-pill span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--danger);
+  box-shadow: 0 0 18px rgba(237, 43, 43, 0.8);
+}
+
+.scoreline {
+  display: grid;
+  gap: 10px;
+}
+
+.scoreline div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px;
+  align-items: center;
+  min-height: 68px;
+  border-radius: 7px;
+  padding: 0 16px;
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.scoreline span {
+  overflow: hidden;
+  color: var(--paper);
+  font-size: 24px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scoreline strong {
+  color: var(--acid);
+  font-size: 44px;
+  line-height: 1;
+  text-align: right;
+}
+
+.live-card p {
+  color: var(--soft);
 }
 
 .section-block,
@@ -353,9 +424,7 @@ section[id] {
 .prize-card,
 .format-panel,
 .board-shell,
-.pickem-form,
-.admin-console,
-.outreach-list article {
+.pickem-form {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);
@@ -453,8 +522,7 @@ section[id] {
   gap: 8px;
 }
 
-.segmented-control button,
-.admin-console button {
+.segmented-control button {
   min-height: 38px;
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -466,8 +534,7 @@ section[id] {
 }
 
 .segmented-control button.active,
-.segmented-control button:hover,
-.admin-console button:hover:not(:disabled) {
+.segmented-control button:hover {
   border-color: rgba(110, 255, 124, 0.52);
   color: var(--paper);
 }
@@ -512,6 +579,10 @@ section[id] {
   border: 1px solid var(--line);
   border-radius: 7px;
   background: rgba(255, 255, 255, 0.045);
+}
+
+.match-card.live {
+  border-color: rgba(110, 255, 124, 0.38);
 }
 
 .match-meta,
@@ -666,53 +737,6 @@ input::placeholder {
   font-size: 13px;
 }
 
-.admin-console {
-  display: grid;
-  gap: 12px;
-  padding: 16px;
-}
-
-.console-topline {
-  justify-content: space-between;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 13px;
-}
-
-.console-topline button,
-.admin-match button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-}
-
-.console-topline button {
-  min-width: 92px;
-}
-
-.admin-match {
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) minmax(0, 1fr);
-  gap: 8px;
-}
-
-.admin-match > span {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 38px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.07);
-  color: var(--warning);
-  font-family: var(--mono);
-}
-
-.admin-console button:disabled {
-  cursor: not-allowed;
-  opacity: 0.38;
-}
-
 .prize-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -728,37 +752,9 @@ input::placeholder {
   color: var(--warning);
 }
 
-.prize-card p,
-.outreach-list p {
+.prize-card p {
   color: var(--soft);
   line-height: 1.6;
-}
-
-.outreach-list {
-  display: grid;
-  gap: 12px;
-}
-
-.outreach-list article {
-  display: grid;
-  grid-template-columns: 24px minmax(0, 1fr);
-  gap: 12px;
-  padding: 16px;
-}
-
-.outreach-list svg {
-  color: var(--cyan);
-}
-
-.outreach-list div {
-  display: grid;
-  gap: 8px;
-}
-
-.outreach-list span {
-  color: var(--warning);
-  font-family: var(--mono);
-  font-size: 13px;
 }
 
 footer {
@@ -868,11 +864,4 @@ footer a {
     flex-direction: column;
   }
 
-  .admin-match {
-    grid-template-columns: 32px minmax(0, 1fr);
-  }
-
-  .admin-match button {
-    grid-column: 2;
-  }
 }

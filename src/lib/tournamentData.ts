@@ -64,12 +64,6 @@ type PrizeRow = {
   description: string
 }
 
-type OutreachRow = {
-  channel: string
-  goal: string
-  asset: string
-}
-
 type SupabaseLikeError = {
   code?: string
   message?: string
@@ -167,7 +161,7 @@ export async function fetchTournamentData(): Promise<TournamentData> {
 
   if (eventError) throw toError(eventError)
 
-  const [players, formatOptions, matches, prizes, outreach] = await Promise.all([
+  const [players, formatOptions, matches, prizes] = await Promise.all([
     supabase
       .from('players')
       .select('id, display_name, handle, short_name, status, source, twitch_url, x_url, tags, note')
@@ -194,16 +188,9 @@ export async function fetchTournamentData(): Promise<TournamentData> {
       .eq('event_id', event.id)
       .order('sort_order', { ascending: true })
       .returns<PrizeRow[]>(),
-    supabase
-      .from('outreach_steps')
-      .select('channel, goal, asset')
-      .eq('event_id', event.id)
-      .order('sort_order', { ascending: true })
-      .returns<OutreachRow[]>(),
   ])
 
-  const firstError =
-    players.error ?? formatOptions.error ?? matches.error ?? prizes.error ?? outreach.error
+  const firstError = players.error ?? formatOptions.error ?? matches.error ?? prizes.error
   if (firstError) throw toError(firstError)
 
   return {
@@ -212,25 +199,7 @@ export async function fetchTournamentData(): Promise<TournamentData> {
     formatOptions: (formatOptions.data ?? []).map(mapFormat),
     matches: (matches.data ?? []).map(mapMatch),
     prizes: prizes.data ?? [],
-    outreach: outreach.data ?? [],
   }
-}
-
-export async function saveMatchWinner(match: Match, winnerId: string) {
-  if (!supabase) throw new Error('Supabase is not configured.')
-
-  const winnerIsA = match.sideA.playerId === winnerId
-  const { error } = await supabase
-    .from('matches')
-    .update({
-      state: 'complete',
-      winner_id: winnerId,
-      score_a: winnerIsA ? 2 : 1,
-      score_b: winnerIsA ? 1 : 2,
-    })
-    .eq('id', match.id)
-
-  if (error) throw toError(error)
 }
 
 export async function savePickem(eventId: string, viewerLabel: string, pickem: Pickem) {

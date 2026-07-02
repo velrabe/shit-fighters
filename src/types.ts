@@ -44,12 +44,6 @@ export type Prize = {
   description: string
 }
 
-export type OutreachStep = {
-  channel: string
-  goal: string
-  asset: string
-}
-
 export type Pickem = {
   championId: string
   finalistId: string
@@ -75,5 +69,4 @@ export type TournamentData = {
   formatOptions: FormatOption[]
   matches: Match[]
   prizes: Prize[]
-  outreach: OutreachStep[]
 }
