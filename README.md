@@ -2,23 +2,26 @@
 
 Unofficial MVP site for Ludwig's July 8 Street Fighter content tournament.
 
-The first version is a static Vite/React frontend with:
+The current version is a Vite/React frontend backed by Supabase with:
 
 - event landing page
 - competitor cards
 - format assumptions
 - bracket and standings
-- local pickems prototype
-- local admin sandbox for match results
+- Supabase pickems insert path
+- realtime match subscriptions
+- protected admin write path for match results
 - launch/outreach notes
 
 ## Data rule
 
-All prototype tournament data lives in one file:
+Runtime tournament data comes from Supabase. There is no frontend mock-data file.
 
-`src/data/mockTournament.ts`
+Bootstrap content lives in:
 
-Search for `SHIT_FIGHTERS_MOCK_DATA` before moving to Supabase. Delete that file and replace the imports with database reads/subscriptions so placeholder data does not survive migration.
+`supabase/seed.sql`
+
+Unknown tournament facts must be stored as explicit `TBD` / `placeholder` rows, never as hidden fake data.
 
 ## Commands
 
@@ -26,6 +29,25 @@ Search for `SHIT_FIGHTERS_MOCK_DATA` before moving to Supabase. Delete that file
 npm install
 npm run dev
 npm run build
+```
+
+## Supabase
+
+The schema lives in `supabase/migrations/20260702123000_init_tournament.sql`.
+
+Apply it with a logged-in Supabase CLI or a database URL:
+
+```bash
+supabase link --project-ref <project-ref>
+supabase db push
+supabase db query --file supabase/seed.sql --linked
+```
+
+The frontend needs:
+
+```bash
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
 ```
 
 ## Ponytail

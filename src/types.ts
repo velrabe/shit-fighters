@@ -55,3 +55,25 @@ export type Pickem = {
   finalistId: string
   sleeperId: string
 }
+
+export type TournamentEvent = {
+  id: string
+  slug: string
+  name: string
+  subtitle: string
+  startUtc: string
+  startLabel: string
+  hostLabel: string
+  streamLabel: string
+  currentPhase: string
+  lastUpdatedLabel: string
+}
+
+export type TournamentData = {
+  event: TournamentEvent
+  players: Player[]
+  formatOptions: FormatOption[]
+  matches: Match[]
+  prizes: Prize[]
+  outreach: OutreachStep[]
+}

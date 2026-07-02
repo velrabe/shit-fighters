@@ -231,6 +231,37 @@ h3 {
   font-weight: 750;
 }
 
+.notice-band.warning {
+  background: #ff7468;
+  color: #210604;
+}
+
+.setup-panel,
+.state-panel {
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--soft);
+}
+
+.setup-panel {
+  display: grid;
+  gap: 12px;
+  margin: 32px;
+  padding: 24px;
+}
+
+.setup-panel p,
+.state-panel {
+  line-height: 1.65;
+}
+
+.state-panel {
+  padding: 18px;
+}
+
 .section-block,
 .section-grid {
   padding: 72px 32px;
@@ -557,7 +588,7 @@ th:not(:first-child) {
 
 .pickem-form {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(160px, 0.7fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   padding: 16px;
 }
@@ -571,6 +602,7 @@ th:not(:first-child) {
   text-transform: uppercase;
 }
 
+input,
 select {
   width: 100%;
   min-height: 44px;
@@ -579,6 +611,11 @@ select {
   background: #111317;
   color: var(--paper);
   font: 16px var(--sans);
+  padding: 0 10px;
+}
+
+input::placeholder {
+  color: var(--muted);
 }
 
 .pickem-ticket {
@@ -600,6 +637,33 @@ select {
   color: var(--paper);
   font-size: 32px;
   line-height: 1;
+}
+
+.pickem-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 1px solid rgba(110, 255, 124, 0.34);
+  border-radius: 6px;
+  background: rgba(110, 255, 124, 0.16);
+  color: var(--paper);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.pickem-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.status-message {
+  grid-column: 1 / -1;
+  color: var(--warning);
+  font-family: var(--mono);
+  font-size: 13px;
 }
 
 .admin-console {

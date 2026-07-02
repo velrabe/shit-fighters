@@ -2,6 +2,7 @@
 
 ## Core thought stream
 
+
 We have one week before Ludwig's small Street Fighter content tournament on July 8 at 1 PM PT. The event looks lightweight and streamer-first: likely organized quickly, probably lobby-based, made for stream and YouTube content more than serious esports production.
 
 The opportunity is to build a useful unofficial tournament hub before the event:
@@ -13,6 +14,23 @@ The opportunity is to build a useful unofficial tournament hub before the event:
 - data structure that can later move cleanly to Supabase
 
 The main constraint is uncertainty. We only know the announcement and five confirmed handles. Tournament format, seeds, stream links, prize pool, final competitors, and rules are all unknown. The product must label uncertainty honestly and avoid mixing real facts with placeholder guesses.
+
+The website should become the second screen during the event.
+
+If viewers are confused about:
+
+• who is playing
+• what match is next
+• who is still alive
+• current standings
+• player background
+
+they should immediately find the answer here.
+
+The stream provides entertainment.
+
+The website provides clarity.
+
 
 ## Go-to-market paths
 
@@ -38,6 +56,7 @@ First version:
 - local-only admin interactions
 - local-only pickems
 - generated original hero image, no official game assets
+
 
 Later Supabase version:
 
@@ -66,3 +85,13 @@ Later Supabase version:
 - match format, likely FT2 or BO3 for Street Fighter
 - whether prizes exist and whether meme awards are acceptable
 - whether production wants an admin link or just public bracket
+
+##  Product Principles
+
+Every unknown fact must stay visibly unknown.
+
+Never fabricate tournament data.
+
+Never imitate official production.
+
+Every placeholder should clearly look like placeholder.
