@@ -20,6 +20,7 @@ import type { FormEvent } from 'react'
 import type { FormatOption, Match, Pickem, Player, TournamentData, TournamentEvent } from './types'
 
 const DATA_NOTICE = 'Unofficial live companion. Scores update as the bracket moves.'
+const HERO_TAGLINE = 'Real matches. Real chaos. Questionable decisions.'
 
 const EMPTY_PLAYERS: TournamentData['players'] = []
 const EMPTY_FORMAT_OPTIONS: TournamentData['formatOptions'] = []
@@ -61,6 +62,24 @@ function getCountdownParts(startUtc: string) {
   const minutes = Math.floor((safeDiff % 3_600_000) / 60_000)
 
   return { days, hours, minutes, isLive: diff <= 0 }
+}
+
+function eventDateLabel(startUtc: string) {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'America/Los_Angeles',
+  }).format(new Date(startUtc))
+}
+
+function eventTimeLabel(startUtc: string) {
+  return new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZone: 'America/Los_Angeles',
+    timeZoneName: 'short',
+  }).format(new Date(startUtc))
 }
 
 function buildStandings(matches: Match[], players: Player[]) {
@@ -126,6 +145,14 @@ function matchLabel(match: Match | undefined) {
   if (match.state === 'live') return `${match.round} live`
   if (match.state === 'complete') return `${match.round} complete`
   return `${match.round} queued`
+}
+
+function matchScore(playersById: Map<string, Player>, match: Match | undefined) {
+  if (!match) return 'Awaiting match'
+  return `${getSideName(playersById, match.sideA)} ${match.scoreA ?? 0} - ${match.scoreB ?? 0} ${getSideName(
+    playersById,
+    match.sideB,
+  )}`
 }
 
 function App() {
@@ -212,6 +239,8 @@ function App() {
   const pickemUniqueCount = new Set([pickem.championId, pickem.finalistId, pickem.sleeperId]).size
   const pickemReady = Boolean(data?.event.id && pickem.championId && pickemUniqueCount === 3)
   const pickemScore = pickemUniqueCount * 100 + completedMatches * 25
+  const dateLabel = eventDateLabel(event.startUtc)
+  const timeLabel = eventTimeLabel(event.startUtc)
 
   const submitPickem = async (formEvent: FormEvent<HTMLFormElement>) => {
     formEvent.preventDefault()
@@ -233,59 +262,132 @@ function App() {
     <main>
       <header className="site-header" aria-label="Primary">
         <a className="brand-mark" href="#top" aria-label="Shit Fighters home">
-          <Swords size={19} />
-          <span>Shit Fighters</span>
+          <span>Shit</span>
+          <strong>Fighters</strong>
         </a>
         <nav>
-          <a href="#live">Live</a>
+          <a className="active" href="#top">Home</a>
           <a href="#bracket">Bracket</a>
+          <a href="#standings">Standings</a>
           <a href="#roster">Roster</a>
           <a href="#pickems">Pickems</a>
+          <a href="#format">Info</a>
         </nav>
+        <div className="header-actions">
+          <a className="icon-link" href="#pickems" aria-label="Community picks">
+            <Gamepad2 size={20} />
+          </a>
+          <a className="header-pickems" href="#pickems">Play pickems</a>
+        </div>
       </header>
 
       <section className="hero-section" id="top">
         <div className="hero-media" aria-hidden="true" />
         <div className="hero-overlay" />
         <div className="hero-content">
-          <p className="eyebrow">
-            <Radio size={16} />
-            {event.hostLabel} - live companion
-          </p>
-          <h1>{event.name}</h1>
-          <p className="hero-copy">
-            Live scores, bracket, roster, and pickems for the July 8 Street Fighter showdown.
-          </p>
+          <p className="scribble">Unofficial &amp; unhinged</p>
+          <h1>
+            The <span>dumbest</span> Street Fighter tournament on the internet
+          </h1>
+          <p className="hero-copy">{HERO_TAGLINE}</p>
+          <div className="hero-live-chip">
+            <span aria-hidden="true" />
+            <strong>{matchLabel(liveMatch)}</strong>
+            <em>{matchScore(playersById, liveMatch)}</em>
+          </div>
+          <aside className="event-panel" aria-label="Event facts">
+            <div>
+              <Timer size={19} />
+              <span className="panel-label">Date</span>
+              <strong>{dateLabel}</strong>
+              <small>{countdown.isLive ? 'Live now' : timeLabel}</small>
+            </div>
+            <div>
+              <Radio size={19} />
+              <span className="panel-label">Stream</span>
+              <strong>{event.streamLabel}</strong>
+              <small>{event.hostLabel}</small>
+            </div>
+            <div>
+              <Users size={19} />
+              <span className="panel-label">Players</span>
+              <strong>{players.length || 8}</strong>
+              <small>{confirmedPlayers.length} checked in</small>
+            </div>
+            <div>
+              <Gamepad2 size={19} />
+              <span className="panel-label">Format</span>
+              <strong>{selectedFormat.label}</strong>
+              <small>{loading ? 'Loading rules' : event.currentPhase}</small>
+            </div>
+          </aside>
           <div className="hero-actions" aria-label="Primary actions">
             <a className="button primary" href="#live">
-              <Flame size={18} />
-              Watch live board
+              <Swords size={22} />
+              View bracket
             </a>
             <a className="button secondary" href="#pickems">
-              <Vote size={18} />
-              Make picks
+              <Trophy size={22} />
+              Play pickems
             </a>
           </div>
+          <div className={loadError ? 'hero-notice warning' : 'hero-notice'} role="status">
+            <ShieldAlert size={16} />
+            <span>{loadError || DATA_NOTICE}</span>
+          </div>
         </div>
-        <aside className="event-panel" aria-label="Event status">
-          <div>
-            <span className="panel-label">Now</span>
-            <strong>{loading ? 'Loading board' : event.currentPhase}</strong>
-          </div>
-          <div>
-            <span className="panel-label">Current match</span>
-            <strong>{matchLabel(liveMatch)}</strong>
-          </div>
-          <div>
-            <span className="panel-label">Start</span>
-            <strong>{event.startLabel}</strong>
-          </div>
-        </aside>
       </section>
 
-      <section className={loadError ? 'notice-band warning' : 'notice-band'} aria-label="Data notice">
-        <ShieldAlert size={18} />
-        <p>{loadError || DATA_NOTICE}</p>
+      <section className="section-block roster-preview" id="roster" aria-labelledby="players-title">
+        <div className="section-heading inline-heading">
+          <div>
+            <h2 id="players-title">Confirmed players <span>({confirmedPlayers.length}/{players.length || 8})</span></h2>
+          </div>
+          <a className="text-link" href="#bracket">View bracket</a>
+        </div>
+        {players.length ? (
+          <div className="player-grid">
+            {players.map((player) => (
+              <article
+                className={`player-card ${player.status} ${
+                  player.source === 'placeholder' ? 'mystery-player' : ''
+                }`}
+                key={player.id}
+              >
+                <div className="player-portrait" aria-hidden="true">
+                  <span>{player.source === 'placeholder' ? '?' : player.shortName}</span>
+                </div>
+                <p className="handle">{player.handle}</p>
+                <h3>{player.displayName}</h3>
+                <div className="tag-row">
+                  {player.tags.map((tag) => (
+                    <span key={tag}>{tag}</span>
+                  ))}
+                </div>
+                <div className="link-row" aria-label={`${player.displayName} links`}>
+                  {player.xUrl ? (
+                    <a href={player.xUrl} target="_blank" rel="noreferrer">
+                      <AtSign size={15} />
+                      X
+                    </a>
+                  ) : (
+                    <span>Social TBD</span>
+                  )}
+                  {player.twitchUrl ? (
+                    <a href={player.twitchUrl} target="_blank" rel="noreferrer">
+                      <ExternalLink size={15} />
+                      Twitch
+                    </a>
+                  ) : (
+                    <span>Stream TBD</span>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="state-panel">Roster is loading.</div>
+        )}
       </section>
 
       <section className="section-grid live-grid" id="live" aria-labelledby="live-title">
@@ -322,29 +424,6 @@ function App() {
               ? `${getSideName(playersById, liveMatch.sideA)} took Game 1. Game 2 is underway.`
               : event.lastUpdatedLabel}
           </p>
-        </div>
-      </section>
-
-      <section className="section-block stats-section" aria-label="Tournament snapshot">
-        <div className="metric-strip">
-          <div>
-            <span>Players</span>
-            <strong>{confirmedPlayers.length}</strong>
-          </div>
-          <div>
-            <span>Live match</span>
-            <strong>{liveMatch?.table ?? '-'}</strong>
-          </div>
-          <div>
-            <span>Matches</span>
-            <strong>{matches.length}</strong>
-          </div>
-          <div>
-            <span>Countdown</span>
-            <strong>
-              {countdown.isLive ? 'Live' : `${countdown.days}d ${countdown.hours}h`}
-            </strong>
-          </div>
         </div>
       </section>
 
@@ -407,7 +486,7 @@ function App() {
               <div className="state-panel">Live board is loading.</div>
             )}
           </div>
-          <div className="standings-panel">
+          <div className="standings-panel" id="standings">
             <div className="panel-title">
               <Crown size={18} />
               <h3>Standings</h3>
@@ -436,59 +515,7 @@ function App() {
         </div>
       </section>
 
-      <section className="section-block" id="roster" aria-labelledby="players-title">
-        <div className="section-heading inline-heading">
-          <div>
-            <p className="eyebrow">
-              <Users size={16} />
-              Roster
-            </p>
-            <h2 id="players-title">Players in the lobby</h2>
-          </div>
-          <span className="data-pill">{confirmedPlayers.length} checked in</span>
-        </div>
-        {players.length ? (
-          <div className="player-grid">
-            {players.map((player) => (
-              <article className={`player-card ${player.status}`} key={player.id}>
-                <div className="player-topline">
-                  <span className="avatar">{player.shortName}</span>
-                  <span className="status-dot">{player.status === 'confirmed' ? 'ready' : 'pending'}</span>
-                </div>
-                <h3>{player.displayName}</h3>
-                <p className="handle">{player.handle}</p>
-                <div className="tag-row">
-                  {player.tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
-                </div>
-                <div className="link-row" aria-label={`${player.displayName} links`}>
-                  {player.xUrl ? (
-                    <a href={player.xUrl} target="_blank" rel="noreferrer">
-                      <AtSign size={15} />
-                      X
-                    </a>
-                  ) : (
-                    <span>Social TBD</span>
-                  )}
-                  {player.twitchUrl ? (
-                    <a href={player.twitchUrl} target="_blank" rel="noreferrer">
-                      <ExternalLink size={15} />
-                      Twitch
-                    </a>
-                  ) : (
-                    <span>Stream TBD</span>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <div className="state-panel">Roster is loading.</div>
-        )}
-      </section>
-
-      <section className="section-grid format-grid" aria-labelledby="format-title">
+      <section className="section-grid format-grid" id="format" aria-labelledby="format-title">
         <div className="section-heading">
           <p className="eyebrow">
             <Gamepad2 size={16} />
